@@ -1,0 +1,16 @@
+{
+  "name": "GERMEN · Calidad WHONET",
+  "short_name": "GERMEN WHONET",
+  "description": "Verificación de calidad y seudonimización de archivos WHONET antes del envío al ente territorial. Funciona sin conexión; los archivos no salen del equipo.",
+  "lang": "es-CO",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f8f8",
+  "theme_color": "#4c858b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

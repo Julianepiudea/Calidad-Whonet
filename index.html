@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GERMEN · Calidad WHONET</title>
+<meta name="description" content="Verificación de calidad y seudonimización de archivos WHONET antes del envío al ente territorial. Todo el procesamiento ocurre en el equipo del usuario.">
+<meta name="theme-color" content="#4c858b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="GERMEN WHONET">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="barra">
+  <div class="barra-in">
+    <img class="logo" src="icons/logo_germen.png" alt="GERMEN" width="91" height="38">
+    <span class="marca-sep" aria-hidden="true"></span>
+    <div class="titulo">
+      <h1>Calidad WHONET</h1>
+      <p>Verificación y preparación del archivo antes del envío al ente territorial</p>
+    </div>
+    <div class="barra-der">
+      <span class="pildora" id="estadoRed" title="La aplicación funciona sin conexión"><span class="punto"></span><span id="estadoTxt">Procesamiento local</span></span>
+      <button class="btn peq prim oculto" id="btnInstalar" type="button">Instalar app</button>
+    </div>
+  </div>
+</header>
+<nav class="pasos" id="pasos" aria-label="Pasos"></nav>
+<main id="app" aria-live="polite"></main>
+<input type="file" id="fi" accept=".dbf,.sir,.csv,.txt,.tsv,.xlsx,.xls,.sqlite,.db">
+<input type="file" id="fiClave" accept=".json,application/json">
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="vendor/sql-wasm.js"></script>
+<script src="js/lectores.js"></script>
+<script src="js/calidad.js"></script>
+<script src="js/anonimizar.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

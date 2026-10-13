@@ -1,9 +1,9 @@
 /* sw.js — Service worker: guarda la aplicación para uso sin conexión.
    Los archivos WHONET nunca pasan por aquí: se leen en memoria desde el equipo del usuario. */
-const CACHE = 'germen-whonet-v1.0.1';
+const CACHE = 'germen-whonet-v1.1.0';
 const ARCHIVOS = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
-  'js/lectores.js', 'js/calidad.js', 'js/anonimizar.js', 'js/app.js',
+  'js/lectores.js', 'js/organismos.js', 'js/calidad.js', 'js/anonimizar.js', 'js/app.js',
   'vendor/xlsx.full.min.js', 'vendor/sql-wasm.js', 'vendor/sql-wasm.wasm',
   'icons/logo_germen.png', 'icons/favicon-64.png', 'icons/icon-192.png', 'icons/icon-512.png',
   'icons/maskable-512.png', 'icons/apple-touch-icon.png'

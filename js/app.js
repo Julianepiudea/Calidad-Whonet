@@ -1,7 +1,7 @@
 /* app.js — Interfaz de GERMEN · Calidad WHONET (PWA). */
 'use strict';
 
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.1.0';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const num = n => Number(n).toLocaleString('es-CO');
@@ -76,7 +76,7 @@ function vCalidad() {
       <div class="stat s-rv"><div class="stat-n">${d.revision.length}</div><div class="stat-l">CIM en zona límite</div></div>
     </div>
     <div class="concl ${cc}"><span class="ic">${ci}</span><div><b>Conclusión:</b> ${esc(r.texto)}</div></div>
-    <div class="tabs no-print">${tab('resumen', 'Alertas críticas', r.error, 'er')}${tab('hallazgos', 'Todos los criterios')}${tab('envio', 'Envío LDSP/INS', d.envio.length, 'en')}${tab('revision', 'CIM límite', d.revision.length, 'rv')}</div>
+    <div class="tabs no-print">${tab('resumen', 'Alertas críticas', r.error, 'er')}${tab('hallazgos', 'Todos los criterios')}${tab('envio', 'Envío LDSP/INS', d.envio.length, 'en')}${tab('revision', 'Para revisar', d.revision.length, 'rv')}</div>
     <div>${contenidoTab()}</div>`;
 }
 function tarjetaHallazgo(h) {
@@ -94,14 +94,14 @@ function contenidoTab() {
   if (todos) { const gr = [...new Set(d.hallazgos.map(h => h.grupo))]; return gr.map(g => `<div class="grp">${esc(g)}</div>` + d.hallazgos.filter(h => h.grupo === g).map(tarjetaHallazgo).join('')).join(''); }
   if (S.tab === 'envio') {
     if (!d.envio.length) return '<div class="vacio">Ningún aislamiento cumple criterios de envío al LDSP/INS.</div>';
-    return `<div class="alerta wn"><b>${d.envio.length}</b> aislamiento(s) con criterio de envío al LDSP/INS. Verifique que el aislamiento físico esté disponible y haga las pruebas indicadas antes del envío.</div>
+    return `<div class="alerta wn"><b>${d.envio.length}</b> aislamiento(s) con criterio de envío según los criterios del INS (noviembre de 2024). Todo envío pasa por el LDSP: «LDSP» = el LDSP confirma y remite al INS la muestra aleatoria mensual; «LDSP → INS» = el INS confirma todos. Las filas con ⚠ no cumplen algún requisito del INS (tipo de muestra, servicio, fecha o un aislamiento por paciente) y probablemente serán rechazadas.</div>
       <div class="tw"><table><thead><tr><th>ID</th><th>Nombre</th><th>Organismo</th><th>Muestra</th><th>Servicio</th><th>Fecha</th><th>Criterio</th><th>Prueba requerida</th><th>Destino</th></tr></thead><tbody>
-      ${d.envio.map(s => `<tr><td><span class="mono">${esc(s.id)}</span></td><td>${esc(s.nombre) || '—'}</td><td><span class="mono">${esc(s.orgC)}</span><br><span class="nota">${esc(s.orgN)}</span></td><td><span class="mono">${esc(s.muestra) || '—'}</span></td><td>${esc(s.servicio) || '—'}</td><td>${esc(s.fecha) || '—'}</td><td>${esc(s.criterio)}</td><td class="sub">${esc(s.prueba)}</td><td><span class="dst ${s.destino === 'INS URGENTE' ? 'urg' : s.destino === 'INS' ? 'ins' : 'ldsp'}">${esc(s.destino)}</span></td></tr>`).join('')}
+      ${d.envio.map(s => `<tr><td><span class="mono">${esc(s.id)}</span></td><td>${esc(s.nombre) || '—'}</td><td><span class="mono">${esc(s.orgC)}</span><br><span class="nota">${esc(s.orgN)}</span></td><td><span class="mono">${esc(s.muestra) || '—'}</span></td><td>${esc(s.servicio) || '—'}</td><td>${esc(s.fecha) || '—'}</td><td>${esc(s.criterio)}${s.avisos.map(a => `<br><span class="nota aviso">⚠ ${esc(a)}</span>`).join('')}</td><td class="sub">${esc(s.prueba)}</td><td><span class="dst ${s.destino.includes('inmediato') ? 'urg' : s.destino.includes('INS') ? 'ins' : 'ldsp'}">${esc(s.destino)}</span></td></tr>`).join('')}
       </tbody></table></div>`;
   }
   if (S.tab === 'revision') {
-    if (!d.revision.length) return '<div class="vacio">Sin valores de CIM en zona límite.</div>';
-    return '<div class="alerta in">Valores de CIM en zona límite que requieren revisión del microbiólogo según el punto de corte vigente.</div>' +
+    if (!d.revision.length) return '<div class="vacio">Sin resultados que requieran revisión.</div>';
+    return '<div class="alerta in">Resultados en zona límite o identificaciones que el microbiólogo debe revisar: según lo que confirme, pueden cumplir criterio de envío.</div>' +
       d.revision.map(v => `<div class="fd rv"><div class="fd-ic">?</div><div class="fd-bd"><div class="fd-t">${esc(v.criterio)}</div><div class="fd-d">${esc(v.detalle)}</div>${v.ids.length ? `<div class="fd-ids">ID: ${v.ids.map(esc).join(' · ')}</div>` : ''}</div><span class="etq rv">Revisar</span></div>`).join('');
   }
   return '';

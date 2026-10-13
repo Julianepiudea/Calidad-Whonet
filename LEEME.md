@@ -25,6 +25,7 @@ Al cambiar cualquier archivo, suba la versión en `sw.js` (`CACHE = 'germen-whon
 | Archivo | Función |
 |---|---|
 | `js/lectores.js` | Lee SQLite (WHONET 2022+), DBF/SIR, CSV/TXT/TSV y XLSX/XLS, incluida la cabecera en una sola celda separada por «\|». |
+| `js/organismos.js` | Grupos de organismos generados desde la tabla oficial de WHONET (`node pruebas/generar_organismos.js`). No se edita a mano. |
 | `js/calidad.js` | Criterio 0 (integridad del archivo) y criterios 1–12 de la herramienta original de diagnóstico. |
 | `js/anonimizar.js` | Clave institucional, detección de columnas sensibles, seudonimización HMAC-SHA-256, limpieza de texto libre, verificación de residuos y escritura en el formato original. |
 | `js/app.js` | Interfaz, instalación y service worker. |

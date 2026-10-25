@@ -38,3 +38,11 @@ Al cambiar cualquier archivo, suba la versión en `sw.js` (`CACHE = 'germen-whon
 - Cada institución crea su clave **una vez** y la respalda. La clave no se envía nunca; la constancia incluye su huella (8 caracteres) para comprobar que todos los envíos usan la misma.
 - Los nombres, los apellidos y los datos de contacto se vacían. En los comentarios, los nombres del propio archivo se reemplazan por `***` y los documentos por su código.
 - Después de escribir el archivo, la aplicación busca en todas las columnas cualquier documento o nombre completo del original y lo informa antes de la descarga.
+
+## Tablero de la red (`tablero/`)
+
+Tablero de vigilancia de la red GERMEN 2016–2025: susceptibilidad (placa de agar), distribución, tendencias, gráficos de embudo, «Mi institución», carbapenemasas, tratamiento empírico (WISCA) y calidad del dato. Usa la misma paleta y cabecera que Calidad WHONET y se navega entre ambas con el selector de la cabecera.
+
+- `tablero/datos_germen.js` contiene **solo datos agregados y anonimizados** (instituciones por letra; sin registros individuales). Se regenera con `scripts/06_export_web.R` del proyecto de análisis y se copia aquí.
+- `tablero/vendor/chart.umd.js` es Chart.js 4.4.1, incluido para funcionar sin conexión.
+- Enlaces directos a una pestaña: `tablero/#k` (carbapenemasas), `#w` (tratamiento empírico), `#q` (calidad del dato), etc.

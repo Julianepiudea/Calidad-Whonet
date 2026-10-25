@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GERMEN · Tablero de vigilancia</title>
+<meta name="description" content="Tablero de vigilancia de la resistencia antimicrobiana de la red GERMEN 2016–2025: perfiles de sensibilidad, tendencias, carbapenemasas, tratamiento empírico y calidad del dato. Instituciones anonimizadas.">
+<meta name="theme-color" content="#4c858b">
+<link rel="icon" type="image/png" href="../icons/favicon-64.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<style>
+/* Paleta y componentes compartidos con GERMEN · Calidad WHONET (petróleo #4C858B y azul #8FC1EB) */
+:root{--germen:#4c858b;--germen-osc:#2f5f64;--germen-cla:#e6f0f1;--azul:#8fc1eb;--azul-cla:#edf5fc;--fondo:#f5f8f8;--sup:#fff;--sup2:#f0f4f5;
+--borde:#dbe4e5;--borde2:#c3d0d2;--tx:#16292b;--tx2:#4d6164;--tx3:#7a8c8f;--ok:#1f7a4d;--wn:#8a5a00;--wn-ic:#c47f00;--er:#b3261e;
+--s-hi:#4c858b;--s-md:#d69a2d;--s-lo:#c2462e;--agar1:#eaf3f3;--agar2:#d3e4e5;--halo:#ffffff;
+--sombra:0 1px 2px rgba(22,41,43,.06),0 4px 16px rgba(22,41,43,.05);--radio:12px;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--germen:#6fb0b6;--germen-osc:#9fd0d5;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;
+--fondo:#111a1b;--sup:#182325;--sup2:#1e2b2d;--borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--wn-ic:#f2c46b;--er:#f19a93;
+--s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;--agar1:#1d3133;--agar2:#152628;--halo:#cfe3e5;--sombra:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}}
+:root[data-theme="dark"]{--germen:#6fb0b6;--germen-osc:#9fd0d5;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;--fondo:#111a1b;--sup:#182325;--sup2:#1e2b2d;
+--borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--wn-ic:#f2c46b;--er:#f19a93;--s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;
+--agar1:#1d3133;--agar2:#152628;--halo:#cfe3e5;--sombra:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);background:var(--fondo);min-height:100vh}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--germen);outline-offset:2px;border-radius:6px}
+a{color:var(--germen-osc)}
+/* Cabecera (igual a Calidad WHONET) */
+.barra{background:var(--sup);border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:10}
+.barra-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.logo{height:38px;width:auto;display:block;background:#fff;border-radius:6px;padding:2px 4px}
+.marca-sep{width:1px;align-self:stretch;background:var(--borde)}
+.titulo h1{font-size:16px;font-weight:700;letter-spacing:-.01em}.titulo p{font-size:12px;color:var(--tx3)}
+.barra-der{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;border:1px solid var(--borde2);background:var(--sup);font-weight:600;font-size:13px;color:var(--tx);text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--sup2)}.btn.prim{background:var(--germen);border-color:var(--germen);color:#fff}
+.suite{display:flex;gap:4px;padding:3px;border-radius:10px;background:var(--sup2);border:1px solid var(--borde)}
+.suite a{padding:5px 10px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--tx2);text-decoration:none;white-space:nowrap}
+.suite a.act{background:var(--sup);color:var(--germen-osc);box-shadow:var(--sombra)}
+main{max-width:1180px;margin:0 auto;padding:14px 16px 56px}
+/* Filtros y pestanas */
+.frow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);margin-bottom:12px}
+.frow label{font-size:12px;color:var(--tx3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.frow select{font-size:13.5px;padding:6px 10px;border:1px solid var(--borde2);border-radius:8px;background:var(--sup);max-width:100%}
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--borde);margin-bottom:14px;overflow-x:auto;scrollbar-width:thin}
+.tab{padding:9px 13px;border:none;background:none;color:var(--tx2);font-weight:600;font-size:13.5px;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab.act{color:var(--germen-osc);border-bottom-color:var(--germen)}
+.tab .nuevo{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:var(--azul-cla);color:var(--germen-osc);margin-left:5px;vertical-align:1px}
+.pan{display:none}.pan.act{display:block}
+.tarjeta{background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);padding:16px 18px;box-shadow:var(--sombra);margin-bottom:14px;min-width:0}
+.tarjeta h2{font-size:16px;font-weight:700}.tarjeta h3{font-size:14px;font-weight:700;margin:12px 0 6px}
+.sub{color:var(--tx2);font-size:13px}.nota{font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.g37{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px}
+@media (max-width:860px){.g2,.g37{grid-template-columns:minmax(0,1fr)}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.titulo p,.marca-sep{display:none}.suite a{padding:5px 7px}.barra-in{flex-wrap:wrap}}
+.stat{background:var(--sup);border:1px solid var(--borde);border-radius:11px;padding:12px 12px}
+.stat-n{font-size:26px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--germen-osc)}.stat-l{font-size:11.5px;color:var(--tx2);margin-top:4px}
+/* Tablas */
+.tw{overflow-x:auto;border:1px solid var(--borde);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--borde);background:var(--sup2);text-align:right;white-space:nowrap}
+td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--borde);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}tr:last-child td{border-bottom:none}
+td i{color:var(--tx2)}.mu{color:var(--tx3)}
+.barra-s{position:relative;height:14px;border-radius:7px;background:var(--sup2);min-width:110px}
+.barra-s span{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+.barra-s em{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--tx2);opacity:.6}
+.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:700}
+.c-hi{background:color-mix(in srgb,var(--s-hi) 18%,transparent);color:var(--s-hi)}.c-md{background:color-mix(in srgb,var(--s-md) 20%,transparent);color:var(--wn)}.c-lo{background:color-mix(in srgb,var(--s-lo) 18%,transparent);color:var(--er)}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--tx2);margin-top:8px}.leg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.agar-wrap{display:flex;justify-content:center}.agar-wrap svg{width:100%;max-width:520px;height:auto}
+.agar-ab{font:700 11px ui-monospace,Consolas,monospace;fill:#16292b}.agar-p{font:800 15px system-ui,sans-serif}
+canvas{max-width:100%}
+.aviso{border-radius:10px;padding:10px 14px;font-size:13px;background:var(--azul-cla);border:1px solid color-mix(in srgb,var(--azul) 55%,transparent);color:var(--tx2);margin-bottom:12px}
+.vacio{padding:36px;text-align:center;color:var(--tx3)}
+footer{max-width:1180px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:var(--tx3)}
+</style>
+</head>
+<body>
+<header class="barra">
+  <div class="barra-in">
+    <img class="logo" src="../icons/logo_germen.png" alt="GERMEN" height="38">
+    <span class="marca-sep" aria-hidden="true"></span>
+    <div class="titulo"><h1>Tablero de vigilancia</h1><p id="hdrSub">Red GERMEN · resistencia antimicrobiana 2016–2025</p></div>
+    <div class="barra-der">
+      <nav class="suite" aria-label="Herramientas GERMEN">
+        <a href="../" title="Verificar y preparar el archivo WHONET antes del envío">Calidad WHONET</a>
+        <a class="act" href="./" aria-current="page">Tablero de la red</a>
+      </nav>
+      <button class="btn" id="btnTema" type="button" title="Cambiar tema claro/oscuro">◐</button>
+    </div>
+  </div>
+</header>
+<main>
+  <div class="tabs" role="tablist">
+    <button class="tab act" data-p="s">Susceptibilidad</button>
+    <button class="tab" data-p="d">Distribución</button>
+    <button class="tab" data-p="t">Tendencias</button>
+    <button class="tab" data-p="c">Comparar<span class="nuevo">embudo</span></button>
+    <button class="tab" data-p="i">Mi institución</button>
+    <button class="tab" data-p="k">Carbapenemasas</button>
+    <button class="tab" data-p="w">Tratamiento empírico<span class="nuevo">nuevo</span></button>
+    <button class="tab" data-p="q">Calidad del dato<span class="nuevo">nuevo</span></button>
+  </div>
+
+  <!-- SUSCEPTIBILIDAD -->
+  <section id="pan-s" class="pan act">
+    <div class="frow">
+      <label>Año</label><select id="sAnio"></select>
+      <label>Grupo</label><select id="sGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico (1–17)</option><option value="neonatal">Neonatal (&lt;1)</option></select>
+      <label>Muestra</label><select id="sMu"><option value="todas">Todas</option><option value="uro">Urocultivo</option><option value="hemo">Hemocultivo</option><option value="resp">Respiratoria</option><option value="piel">Piel/tejidos/hueso</option><option value="abd">Intraabdominal</option><option value="lcr">LCR</option></select>
+      <label>Organismo</label><select id="sOrg"></select>
+      <label>Ref.</label><select id="sRef"><option>90</option><option>80</option><option>70</option></select>
+    </div>
+    <div class="g37">
+      <div class="tarjeta"><h2 id="sTit"></h2><p class="sub" id="sSub"></p><div class="agar-wrap" id="sAgar"></div>
+        <p class="nota">Placa de agar: el diámetro de cada halo es proporcional al % de sensibilidad (como un halo de inhibición). Verde-petróleo ≥90 %, ámbar 70–89 %, rojo &lt;70 %. Solo combinaciones con n ≥ 30 (CLSI M39).</p></div>
+      <div class="tarjeta"><h2>Perfil de sensibilidad</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Antibiótico</th><th>%S</th><th>IC 95 %</th><th></th><th>n</th><th>CIM₅₀</th><th>CIM₉₀</th></tr></thead><tbody id="sTb"></tbody></table></div>
+        <p class="nota">IC 95 % de Wilson. %S incluye SDD como I (no sensible). Puntos de corte CLSI 2025 aplicados a todos los años. CIM₅₀/₉₀: adultos, 2025, todas las muestras. Primer aislamiento por paciente, especie y año; excluye cultivos de tamizaje.</p></div>
+    </div>
+  </section>
+
+  <!-- DISTRIBUCION -->
+  <section id="pan-d" class="pan">
+    <div class="frow"><label>Año</label><select id="dAnio"></select><label>Grupo</label><select id="dGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico</option><option value="neonatal">Neonatal</option></select>
+      <label>Muestra</label><select id="dMu"><option value="todas">Todas</option><option value="uro">Urocultivo</option><option value="hemo">Hemocultivo</option><option value="resp">Respiratoria</option><option value="piel">Piel/tejidos/hueso</option><option value="abd">Intraabdominal</option><option value="lcr">LCR</option></select></div>
+    <div class="g2"><div class="tarjeta"><h2 id="dTit"></h2><p class="sub" id="dSub"></p><div style="position:relative;height:420px"><canvas id="dCh"></canvas></div>
+      <div class="leg"><span><i style="background:#c2462e"></i>Gram negativo</span><span><i style="background:#4c858b"></i>Gram positivo</span><span><i style="background:#8fc1eb"></i>Hongos/otros</span></div></div>
+      <div class="tarjeta"><h2>Los más frecuentes</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Microorganismo</th><th>n</th><th>%</th></tr></thead><tbody id="dTb"></tbody></table></div></div></div>
+  </section>
+
+  <!-- TENDENCIAS -->
+  <section id="pan-t" class="pan">
+    <div class="frow"><label>Organismo</label><select id="tOrg"></select><label>Grupo</label><select id="tGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico</option></select>
+      <label>Antibióticos</label><select id="tA1"></select><select id="tA2"></select><select id="tA3"></select>
+      <label>Instituciones</label><select id="tCoh"><option value="red">Toda la red</option><option value="est">Cohorte estable</option></select></div>
+    <div class="tarjeta"><h2>Sensibilidad 2016–2025</h2><p class="sub" id="tSub"></p><div style="position:relative;height:380px"><canvas id="tCh"></canvas></div>
+      <p class="nota">Las bandas muestran el IC 95 % de Wilson. La red cambió de composición (instituciones que entran y salen). La «cohorte estable» incluye solo las instituciones con datos los diez años y es la mejor lectura de la tendencia.</p></div>
+    <div class="tarjeta"><h2>Indicadores prioritarios de resistencia</h2><p class="sub">OR anual dentro de institución (GLMM logístico con intercepto aleatorio por institución). OR &gt;1 = la resistencia aumenta cada año.</p>
+      <div class="tw" style="margin-top:10px"><table><thead><tr><th>Indicador</th><th>2016–18</th><th>2023–25</th><th>2025</th><th>OR anual (IC 95 %)</th><th>OR cohorte estable</th><th>MOR</th></tr></thead><tbody id="tInd"></tbody></table></div>
+      <p class="nota">MOR (odds ratio mediana) 2023–2025: cuánto cambia la probabilidad de resistencia al pasar de una institución a otra con el mismo perfil. MOR 1 = sin diferencias entre instituciones; MOR 2 = la odds se duplica.</p></div>
+  </section>
+
+  <!-- COMPARAR (EMBUDO) -->
+  <section id="pan-c" class="pan">
+    <div class="frow"><label>Indicador</label><select id="cInd"></select><label>Resaltar</label><select id="cYo"><option value="">— ninguna —</option></select></div>
+    <div class="g37"><div class="tarjeta"><h2>Gráfico de embudo 2023–2025</h2><p class="sub" id="cSub"></p><div style="position:relative;height:420px"><canvas id="cCh"></canvas></div>
+      <p class="nota">Cada punto es una institución (anónima). Las curvas son los límites de control binomiales del 95 % (punteado) y 99,8 % (continuo) alrededor del valor de la red. Un punto fuera del 99,8 % es una señal que vale la pena revisar. No es un ranking: las instituciones con pocos aislamientos varían más por azar.</p></div>
+      <div class="tarjeta"><h2>Instituciones</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Institución</th><th>n</th><th>%R</th><th>Señal</th></tr></thead><tbody id="cTb"></tbody></table></div></div></div>
+  </section>
+
+  <!-- MI INSTITUCION -->
+  <section id="pan-i" class="pan">
+    <div class="frow"><label>Mi institución</label><select id="iInst"><option value="">— seleccionar —</option></select><label>Organismo</label><select id="iOrg"></select><label>Periodo</label><select id="iPer"><option value="2025">2025</option><option value="2023-2024">2023–2024</option></select></div>
+    <div id="iBox"><div class="tarjeta vacio">Seleccione su institución (cada institución conoce su letra) para ver su perfil frente al resto de la red.</div></div>
+  </section>
+
+  <!-- CARBAPENEMASAS -->
+  <section id="pan-k" class="pan">
+    <div class="stats" id="kStats"></div>
+    <div class="g2"><div class="tarjeta"><h2>Casos por año y tipo</h2><p class="sub">Un caso = paciente-especie-año. Incluye tamizaje.</p><div style="position:relative;height:340px"><canvas id="kCh1"></canvas></div></div>
+      <div class="tarjeta"><h2>Tasa clínica por 1.000 BGN</h2><p class="sub">Carbapenemasas confirmadas en muestras clínicas por cada 1.000 primeros aislamientos de bacilos gramnegativos.</p><div style="position:relative;height:340px"><canvas id="kCh2"></canvas></div></div></div>
+    <div class="g2"><div class="tarjeta"><h2>2025: especie y tipo</h2><div class="tw" id="kEsp" style="margin-top:10px"></div></div>
+      <div class="tarjeta"><h2>¿Qué queda activo? (2023–2025)</h2><p class="sub">% sensible en Enterobacterales productores (muestras clínicas), por tipo de enzima.</p><div class="tw" id="kRes" style="margin-top:10px"></div></div></div>
+  </section>
+
+  <!-- WISCA -->
+  <section id="pan-w" class="pan">
+    <div class="aviso"><b>Antibiograma ponderado por síndrome (WISCA).</b> El antibiograma clásico responde «¿qué % de <i>E. coli</i> es sensible?». Al elegir un tratamiento empírico la pregunta es otra: «si inicio este esquema en este síndrome, ¿qué probabilidad hay de cubrir el germen, cualquiera que sea?». WISCA combina la frecuencia de cada patógeno en el síndrome con su sensibilidad (modelo bayesiano, 2.000 simulaciones). Datos 2023–2025, instituciones activas.</div>
+    <div class="frow"><label>Síndrome</label><select id="wSin"></select></div>
+    <div class="g37"><div class="tarjeta"><h2>Cobertura empírica</h2><p class="sub" id="wSub"></p><div style="position:relative;height:420px"><canvas id="wCh"></canvas></div></div>
+      <div class="tarjeta"><h2>Qué pondera la cobertura</h2><p class="sub">Patógenos más frecuentes en el síndrome.</p><div class="tw" id="wComp" style="margin-top:10px"></div>
+        <p class="nota">Para resistencia intrínseca se asume R aunque no se haya probado; en <i>S. aureus</i> los betalactámicos siguen a la meticilina; en <i>E. faecalis</i> piperacilina/tazobactam y carbapenémicos siguen a la ampicilina. Bacteriemias: se excluyen estafilococos coagulasa negativa y otros contaminantes habituales. No sustituye el juicio clínico ni la guía institucional.</p></div></div>
+  </section>
+
+  <!-- CALIDAD -->
+  <section id="pan-q" class="pan">
+    <div class="aviso">Indicadores de completitud y consistencia de los archivos WHONET 2025 por institución (anónima). Para corregir los problemas <b>antes</b> de enviar el archivo, use <a href="../">GERMEN · Calidad WHONET</a>: verifica el archivo en el navegador sin subirlo a ningún servidor.</div>
+    <div class="tarjeta"><div class="tw"><table><thead><tr><th>Inst.</th><th>Registros</th><th>Con antibiograma</th><th>Interpretables</th><th>Sin servicio</th><th>Sin edad</th><th>Muestra «otras»</th><th>Contaminantes en hemocultivos</th><th>CRE con prueba de carbapenemasa</th></tr></thead><tbody id="qTb"></tbody></table></div>
+      <p class="nota">Semáforo: verde = mejor que la mediana de la red; ámbar = peor que la mediana; rojo = fuera del rango aceptable (sin servicio o sin edad &gt;10 %, contaminantes &gt;30 % de hemocultivos positivos, interpretables &lt;80 %, CRE con prueba &lt;50 %).</p></div>
+  </section>
+</main>
+<footer id="pie"></footer>
+<script src="vendor/chart.umd.js"></script>
+<script src="datos_germen.js"></script>
+<script src="tablero.js"></script>
+</body>
+</html>

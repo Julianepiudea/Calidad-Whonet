@@ -1,7 +1,7 @@
 /* app.js — Interfaz de GERMEN · Calidad WHONET (PWA). */
 'use strict';
 
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const num = n => Number(n).toLocaleString('es-CO');

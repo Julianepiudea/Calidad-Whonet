@@ -4,83 +4,131 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GERMEN · Tablero de vigilancia</title>
-<meta name="description" content="Tablero de vigilancia de la resistencia antimicrobiana de la red GERMEN 2016–2025: perfiles de sensibilidad, tendencias, carbapenemasas, tratamiento empírico y calidad del dato. Instituciones anonimizadas.">
+<meta name="description" content="Tablero de vigilancia de la resistencia antimicrobiana de la red GERMEN 2016–2025: rosa de sensibilidad, espectro de CIM, tendencias, carbapenemasas, tratamiento empírico, calidad del dato y vista por institución. Instituciones anonimizadas.">
 <meta name="theme-color" content="#4c858b">
 <link rel="icon" type="image/png" href="../icons/favicon-64.png">
 <link rel="manifest" href="../manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-/* Paleta y componentes compartidos con GERMEN · Calidad WHONET (petróleo #4C858B y azul #8FC1EB) */
-:root{--germen:#4c858b;--germen-osc:#2f5f64;--germen-cla:#e6f0f1;--azul:#8fc1eb;--azul-cla:#edf5fc;--fondo:#f5f8f8;--sup:#fff;--sup2:#f0f4f5;
---borde:#dbe4e5;--borde2:#c3d0d2;--tx:#16292b;--tx2:#4d6164;--tx3:#7a8c8f;--ok:#1f7a4d;--wn:#8a5a00;--wn-ic:#c47f00;--er:#b3261e;
---s-hi:#4c858b;--s-md:#d69a2d;--s-lo:#c2462e;--agar1:#eaf3f3;--agar2:#d3e4e5;--halo:#ffffff;
---sombra:0 1px 2px rgba(22,41,43,.06),0 4px 16px rgba(22,41,43,.05);--radio:12px;color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--germen:#6fb0b6;--germen-osc:#9fd0d5;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;
---fondo:#111a1b;--sup:#182325;--sup2:#1e2b2d;--borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--wn-ic:#f2c46b;--er:#f19a93;
---s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;--agar1:#1d3133;--agar2:#152628;--halo:#cfe3e5;--sombra:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}}
-:root[data-theme="dark"]{--germen:#6fb0b6;--germen-osc:#9fd0d5;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;--fondo:#111a1b;--sup:#182325;--sup2:#1e2b2d;
---borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--wn-ic:#f2c46b;--er:#f19a93;--s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;
---agar1:#1d3133;--agar2:#152628;--halo:#cfe3e5;--sombra:0 1px 2px rgba(0,0,0,.3);color-scheme:dark}
+/* === PALETA (logo GERMEN: petroleo #4C858B y azul #8FC1EB) ==================== */
+:root{--germen:#4c858b;--germen-osc:#2f5f64;--germen-cla:#e6f0f1;--azul:#8fc1eb;--azul-cla:#edf5fc;--fondo:#f3f7f7;--sup:#fff;--sup2:#eef3f4;
+--borde:#dbe4e5;--borde2:#c3d0d2;--tx:#16292b;--tx2:#4d6164;--tx3:#7a8c8f;--ok:#1f7a4d;--wn:#8a5a00;--er:#b3261e;
+--s-hi:#4c858b;--s-md:#d69a2d;--s-lo:#c2462e;--cS:#e1eeee;--cI:#f6ead0;--cR:#f5dcd4;--ink:#16292b;
+--sombra:0 1px 2px rgba(22,41,43,.05),0 8px 24px -12px rgba(22,41,43,.18);--radio:16px;
+--f-disp:'Archivo',system-ui,sans-serif;--f-body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--f-mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+--ease:cubic-bezier(.16,1,.3,1);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--germen:#6fb0b6;--germen-osc:#a6d6db;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;
+--fondo:#0f1718;--sup:#172224;--sup2:#1e2b2d;--borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--er:#f19a93;
+--s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;--cS:#1f3a3c;--cI:#3d3420;--cR:#41282a;--ink:#e8f0f1;--sombra:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{--germen:#6fb0b6;--germen-osc:#a6d6db;--germen-cla:#1d3436;--azul:#8fc1eb;--azul-cla:#1a2a38;--fondo:#0f1718;--sup:#172224;--sup2:#1e2b2d;
+--borde:#2b3b3e;--borde2:#3a4d50;--tx:#e8f0f1;--tx2:#a9bbbe;--tx3:#7f9396;--ok:#6fd19c;--wn:#f2c46b;--er:#f19a93;--s-hi:#6fb0b6;--s-md:#e7b452;--s-lo:#ec8a7a;
+--cS:#1f3a3c;--cI:#3d3420;--cR:#41282a;--ink:#e8f0f1;--sombra:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tx);background:var(--fondo);min-height:100vh}
+body{font:14.5px/1.5 var(--f-body);color:var(--tx);background:var(--fondo);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(var(--germen) 1px,transparent 1px),linear-gradient(90deg,var(--germen) 1px,transparent 1px);background-size:56px 56px;opacity:.035}
 button,input,select{font:inherit;color:inherit}button{cursor:pointer}
-:focus-visible{outline:2px solid var(--germen);outline-offset:2px;border-radius:6px}
+:focus-visible{outline:2px solid var(--germen);outline-offset:2px;border-radius:8px}
 a{color:var(--germen-osc)}
-/* Cabecera (igual a Calidad WHONET) */
-.barra{background:var(--sup);border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:10}
-.barra-in{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
-.logo{height:38px;width:auto;display:block;background:#fff;border-radius:6px;padding:2px 4px}
+/* === CABECERA ================================================================ */
+.barra{background:color-mix(in srgb,var(--sup) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:20}
+.barra-in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.logo{height:40px;width:auto;display:block;background:#fff;border-radius:8px;padding:3px 5px}
 .marca-sep{width:1px;align-self:stretch;background:var(--borde)}
-.titulo h1{font-size:16px;font-weight:700;letter-spacing:-.01em}.titulo p{font-size:12px;color:var(--tx3)}
+.titulo h1{font:800 17px var(--f-disp);letter-spacing:-.02em}.titulo p{font-size:12px;color:var(--tx3)}
 .barra-der{margin-left:auto;display:flex;align-items:center;gap:8px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;border:1px solid var(--borde2);background:var(--sup);font-weight:600;font-size:13px;color:var(--tx);text-decoration:none;white-space:nowrap}
-.btn:hover{background:var(--sup2)}.btn.prim{background:var(--germen);border-color:var(--germen);color:#fff}
-.suite{display:flex;gap:4px;padding:3px;border-radius:10px;background:var(--sup2);border:1px solid var(--borde)}
-.suite a{padding:5px 10px;border-radius:7px;font-size:12.5px;font-weight:600;color:var(--tx2);text-decoration:none;white-space:nowrap}
-.suite a.act{background:var(--sup);color:var(--germen-osc);box-shadow:var(--sombra)}
-main{max-width:1180px;margin:0 auto;padding:14px 16px 56px}
-/* Filtros y pestanas */
-.frow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);margin-bottom:12px}
-.frow label{font-size:12px;color:var(--tx3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-.frow select{font-size:13.5px;padding:6px 10px;border:1px solid var(--borde2);border-radius:8px;background:var(--sup);max-width:100%}
-.tabs{display:flex;gap:2px;border-bottom:2px solid var(--borde);margin-bottom:14px;overflow-x:auto;scrollbar-width:thin}
-.tab{padding:9px 13px;border:none;background:none;color:var(--tx2);font-weight:600;font-size:13.5px;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.tab.act{color:var(--germen-osc);border-bottom-color:var(--germen)}
-.tab .nuevo{font-size:10px;font-weight:800;padding:1px 6px;border-radius:999px;background:var(--azul-cla);color:var(--germen-osc);margin-left:5px;vertical-align:1px}
-.pan{display:none}.pan.act{display:block}
-.tarjeta{background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);padding:16px 18px;box-shadow:var(--sombra);margin-bottom:14px;min-width:0}
-.tarjeta h2{font-size:16px;font-weight:700}.tarjeta h3{font-size:14px;font-weight:700;margin:12px 0 6px}
-.sub{color:var(--tx2);font-size:13px}.nota{font-size:12px;color:var(--tx3);margin-top:8px;line-height:1.5}
-.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.g37{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px}
-@media (max-width:860px){.g2,.g37{grid-template-columns:minmax(0,1fr)}}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
-@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.titulo p,.marca-sep{display:none}.suite a{padding:5px 7px}.barra-in{flex-wrap:wrap}}
-.stat{background:var(--sup);border:1px solid var(--borde);border-radius:11px;padding:12px 12px}
-.stat-n{font-size:26px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--germen-osc)}.stat-l{font-size:11.5px;color:var(--tx2);margin-top:4px}
-/* Tablas */
-.tw{overflow-x:auto;border:1px solid var(--borde);border-radius:10px}
+.suite{display:flex;gap:3px;padding:4px;border-radius:12px;background:var(--sup2);border:1px solid var(--borde)}
+.suite a{padding:6px 12px;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--tx2);text-decoration:none;white-space:nowrap;transition:all .2s}
+.suite a:hover{color:var(--germen-osc)}
+.suite a.act{background:var(--germen);color:#fff;box-shadow:0 6px 14px -8px var(--germen)}
+.ico-btn{width:38px;height:38px;border-radius:11px;border:1px solid var(--borde2);background:var(--sup);display:grid;place-items:center;transition:all .2s}
+.ico-btn:hover{border-color:var(--germen);color:var(--germen-osc);transform:rotate(-12deg)}
+/* === HERO ===================================================================== */
+.hero{max-width:1240px;margin:18px auto 0;padding:0 16px}
+.hero-in{border-radius:22px;padding:22px 26px;background:linear-gradient(120deg,#2f5f64 0%,#4c858b 55%,#6c9fb8 100%);color:#fff;display:flex;gap:24px;align-items:center;flex-wrap:wrap;position:relative;overflow:hidden}
+.hero-in::after{content:'';position:absolute;right:-60px;top:-80px;width:280px;height:280px;border-radius:50%;border:34px solid rgba(255,255,255,.08)}
+.hero h2{font:800 26px/1.1 var(--f-disp);letter-spacing:-.03em}.hero p{opacity:.85;font-size:13.5px;max-width:560px;margin-top:6px}
+.hero-k{display:flex;gap:26px;margin-left:auto;flex-wrap:wrap;position:relative;z-index:1}
+.hero-k div b{display:block;font:800 26px var(--f-disp);letter-spacing:-.02em}.hero-k div span{font-size:11.5px;opacity:.8;text-transform:uppercase;letter-spacing:.06em}
+main{max-width:1240px;margin:0 auto;padding:14px 16px 56px}
+/* === PESTANAS ================================================================= */
+.tabs{display:flex;gap:6px;margin:4px 0 16px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 8px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid var(--borde);background:var(--sup);color:var(--tx2);font-weight:700;font-size:13.5px;border-radius:13px;white-space:nowrap;transition:all .25s var(--ease)}
+.tab svg{width:17px;height:17px;flex:none}
+.tab:hover{border-color:var(--germen);color:var(--germen-osc);transform:translateY(-1px)}
+.tab.act{background:var(--germen);border-color:var(--germen);color:#fff;box-shadow:0 10px 22px -12px var(--germen)}
+.tab .nuevo{font:700 9.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:var(--azul);color:#16292b}
+.pan{display:none}.pan.act{display:block;animation:entra .45s var(--ease)}
+@keyframes entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* === FILTROS ================================================================== */
+.frow{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:14px 16px;background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);margin-bottom:14px;box-shadow:var(--sombra)}
+.f{display:flex;flex-direction:column;gap:5px}
+.f>label{font:600 10.5px var(--f-mono);color:var(--tx3);text-transform:uppercase;letter-spacing:.09em}
+.sel{appearance:none;font-size:13.5px;font-weight:600;padding:8px 34px 8px 12px;border:1px solid var(--borde2);border-radius:11px;background:var(--sup) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234c858b' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center;max-width:100%;transition:border-color .2s}
+.sel:hover{border-color:var(--germen)}
+.seg{display:inline-flex;padding:3px;border-radius:12px;background:var(--sup2);border:1px solid var(--borde);gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:none;padding:6px 11px;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--tx2);transition:all .2s var(--ease)}
+.seg button:hover{color:var(--germen-osc)}
+.seg button.on{background:var(--sup);color:var(--germen-osc);box-shadow:0 1px 2px rgba(0,0,0,.08),0 4px 10px -6px rgba(47,95,100,.5)}
+/* === TARJETAS ================================================================ */
+.tarjeta{background:var(--sup);border:1px solid var(--borde);border-radius:var(--radio);padding:18px 20px;box-shadow:var(--sombra);margin-bottom:14px;min-width:0;transition:box-shadow .3s}
+.tarjeta:hover{box-shadow:0 1px 2px rgba(22,41,43,.05),0 14px 34px -16px rgba(22,41,43,.28)}
+.tarjeta h2{font:800 17px var(--f-disp);letter-spacing:-.02em}.tarjeta h3{font-size:14px;font-weight:700;margin:12px 0 6px}
+.thead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.kick{font:600 10.5px var(--f-mono);color:var(--germen);text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
+.sub{color:var(--tx2);font-size:13px}.nota{font-size:12px;color:var(--tx3);margin-top:10px;line-height:1.55}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.g37{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:14px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.g2>*,.g37>*,.g3>*{min-width:0}
+@media (max-width:900px){.g2,.g37,.g3{grid-template-columns:minmax(0,1fr)}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.titulo p,.marca-sep{display:none}.suite a{padding:6px 8px}.barra-in{flex-wrap:wrap}.hero-k{margin-left:0}}
+.stat{background:var(--sup);border:1px solid var(--borde);border-radius:14px;padding:14px;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--germen)}
+.stat-n{font:800 28px/1.05 var(--f-disp);letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--germen-osc)}.stat-l{font-size:12px;color:var(--tx2);margin-top:5px}
+/* === TABLAS =================================================================== */
+.tw{overflow-x:auto;border:1px solid var(--borde);border-radius:12px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--borde);background:var(--sup2);text-align:right;white-space:nowrap}
+th{font:600 10.5px var(--f-mono);text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);padding:9px 10px;border-bottom:1px solid var(--borde);background:var(--sup2);text-align:right;white-space:nowrap}
 td{padding:7px 10px;text-align:right;border-bottom:1px solid var(--borde);font-variant-numeric:tabular-nums}
 th:first-child,td:first-child{text-align:left}tr:last-child td{border-bottom:none}
+tbody tr{transition:background .15s}tbody tr:hover{background:var(--sup2)}
+tr.sel-row{background:var(--germen-cla)!important}
 td i{color:var(--tx2)}.mu{color:var(--tx3)}
-.barra-s{position:relative;height:14px;border-radius:7px;background:var(--sup2);min-width:110px}
-.barra-s span{position:absolute;left:0;top:0;bottom:0;border-radius:7px}
+.barra-s{position:relative;height:12px;border-radius:7px;background:var(--sup2);min-width:100px}
+.barra-s span{position:absolute;left:0;top:0;bottom:0;border-radius:7px;transition:width .8s var(--ease)}
 .barra-s em{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--tx2);opacity:.6}
-.chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:700}
+.chip{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700}
 .c-hi{background:color-mix(in srgb,var(--s-hi) 18%,transparent);color:var(--s-hi)}.c-md{background:color-mix(in srgb,var(--s-md) 20%,transparent);color:var(--wn)}.c-lo{background:color-mix(in srgb,var(--s-lo) 18%,transparent);color:var(--er)}
-.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--tx2);margin-top:8px}.leg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-.agar-wrap{display:flex;justify-content:center}.agar-wrap svg{width:100%;max-width:520px;height:auto}
-.agar-ab{font:700 11px ui-monospace,Consolas,monospace;fill:#16292b}.agar-p{font:800 15px system-ui,sans-serif}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--tx2);margin-top:10px}.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 canvas{max-width:100%}
-.aviso{border-radius:10px;padding:10px 14px;font-size:13px;background:var(--azul-cla);border:1px solid color-mix(in srgb,var(--azul) 55%,transparent);color:var(--tx2);margin-bottom:12px}
+.aviso{border-radius:14px;padding:12px 16px;font-size:13px;background:var(--azul-cla);border:1px solid color-mix(in srgb,var(--azul) 55%,transparent);color:var(--tx2);margin-bottom:14px}
 .vacio{padding:36px;text-align:center;color:var(--tx3)}
-footer{max-width:1180px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:var(--tx3)}
+footer{max-width:1240px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:var(--tx3)}
+/* === GRAFICOS SVG PROPIOS (rosa, espectro, franjas) ============================ */
+.viz svg{width:100%;height:auto;display:block}
+.rosa-ab{font:700 11.5px var(--f-mono);fill:var(--tx)}.rosa-p{font:800 14px var(--f-disp)}.rosa-c{font:600 13px var(--f-body);fill:var(--tx2);font-style:italic}
+.ax{font:500 11px var(--f-mono);fill:var(--tx3)}.bl{font:600 12.5px var(--f-body);fill:var(--tx)}.cel{font:600 9.5px var(--f-mono);fill:var(--tx)}
+.petal{transform:scale(0);animation:crece .9s var(--ease) forwards;animation-delay:var(--d)}
+@keyframes crece{to{transform:scale(1)}}
+.col{transform:scaleY(0);transform-box:fill-box;transform-origin:bottom;animation:sube .7s var(--ease) forwards;animation-delay:var(--d)}
+@keyframes sube{to{transform:none}}
+.petal:hover,.col:hover{filter:brightness(1.12)}
+.vista{display:flex;gap:8px;align-items:center}
+.strip-row{display:grid;grid-template-columns:minmax(150px,230px) 1fr 70px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--borde)}
+.strip-row:last-child{border-bottom:0}
+.strip-row .lab{font-size:12.5px;font-weight:600}
+.strip-row .val{font:700 13px var(--f-mono);text-align:right}
+.yo-badge{display:inline-flex;align-items:center;gap:8px;font:800 30px var(--f-disp);color:var(--germen-osc)}
+.yo-badge span{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--germen);color:#fff;font-size:26px}
+@media (prefers-reduced-motion:reduce){.petal,.col{animation:none;transform:none}.pan.act{animation:none}}
 </style>
 </head>
 <body>
 <header class="barra">
   <div class="barra-in">
-    <img class="logo" src="../icons/logo_germen.png" alt="GERMEN" height="38">
+    <img class="logo" src="../icons/logo_germen.png" alt="GERMEN" height="40">
     <span class="marca-sep" aria-hidden="true"></span>
     <div class="titulo"><h1>Tablero de vigilancia</h1><p id="hdrSub">Red GERMEN · resistencia antimicrobiana 2016–2025</p></div>
     <div class="barra-der">
@@ -88,90 +136,100 @@ footer{max-width:1180px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:v
         <a href="../" title="Verificar y preparar el archivo WHONET antes del envío">Calidad WHONET</a>
         <a class="act" href="./" aria-current="page">Tablero de la red</a>
       </nav>
-      <button class="btn" id="btnTema" type="button" title="Cambiar tema claro/oscuro">◐</button>
+      <button class="ico-btn" id="btnTema" type="button" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg></button>
     </div>
   </div>
 </header>
+<section class="hero"><div class="hero-in">
+  <div><h2>Resistencia antimicrobiana en la red GERMEN</h2><p>Diez años de WHONET reinterpretados con CLSI 2025. Cada institución es una letra; cada una conoce la suya.</p></div>
+  <div class="hero-k" id="heroK"></div>
+</div></section>
 <main>
   <div class="tabs" role="tablist">
-    <button class="tab act" data-p="s">Susceptibilidad</button>
-    <button class="tab" data-p="d">Distribución</button>
-    <button class="tab" data-p="t">Tendencias</button>
-    <button class="tab" data-p="c">Comparar<span class="nuevo">embudo</span></button>
-    <button class="tab" data-p="i">Mi institución</button>
-    <button class="tab" data-p="k">Carbapenemasas</button>
-    <button class="tab" data-p="w">Tratamiento empírico<span class="nuevo">nuevo</span></button>
-    <button class="tab" data-p="q">Calidad del dato<span class="nuevo">nuevo</span></button>
+    <button class="tab act" data-p="s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5M5 5l3.5 3.5M15.5 15.5 19 19M5 19l3.5-3.5M15.5 8.5 19 5"/></svg>Susceptibilidad<span class="nuevo">CIM</span></button>
+    <button class="tab" data-p="d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Distribución</button>
+    <button class="tab" data-p="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg>Tendencias</button>
+    <button class="tab" data-p="c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg>Comparar</button>
+    <button class="tab" data-p="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>Mi institución<span class="nuevo">nuevo</span></button>
+    <button class="tab" data-p="k"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7v6c0 5 4 8 9 9 5-1 9-4 9-9V7z"/></svg>Carbapenemasas</button>
+    <button class="tab" data-p="w"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L14 8V2M8 2h8M7 15h10"/></svg>Tratamiento empírico</button>
+    <button class="tab" data-p="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Calidad del dato</button>
   </div>
 
   <!-- SUSCEPTIBILIDAD -->
   <section id="pan-s" class="pan act">
     <div class="frow">
-      <label>Año</label><select id="sAnio"></select>
-      <label>Grupo</label><select id="sGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico (1–17)</option><option value="neonatal">Neonatal (&lt;1)</option></select>
-      <label>Muestra</label><select id="sMu"><option value="todas">Todas</option><option value="uro">Urocultivo</option><option value="hemo">Hemocultivo</option><option value="resp">Respiratoria</option><option value="piel">Piel/tejidos/hueso</option><option value="abd">Intraabdominal</option><option value="lcr">LCR</option></select>
-      <label>Organismo</label><select id="sOrg"></select>
-      <label>Ref.</label><select id="sRef"><option>90</option><option>80</option><option>70</option></select>
+      <div class="f"><label>Organismo</label><select class="sel" id="sOrg"></select></div>
+      <div class="f"><label>Año</label><select class="sel" id="sAnio"></select></div>
+      <div class="f"><label>Grupo de edad</label><div class="seg" id="sGrupo" data-v="adulto"><button data-v="adulto" class="on">Adultos</button><button data-v="pediatrico">Pediátrico</button><button data-v="neonatal">Neonatal</button></div></div>
+      <div class="f"><label>Muestra</label><div class="seg" id="sMu" data-v="todas"><button data-v="todas" class="on">Todas</button><button data-v="uro">Orina</button><button data-v="hemo">Sangre</button><button data-v="resp">Respiratoria</button><button data-v="piel">Piel</button><button data-v="abd">Abdomen</button><button data-v="lcr">LCR</button></div></div>
     </div>
     <div class="g37">
-      <div class="tarjeta"><h2 id="sTit"></h2><p class="sub" id="sSub"></p><div class="agar-wrap" id="sAgar"></div>
-        <p class="nota">Placa de agar: el diámetro de cada halo es proporcional al % de sensibilidad (como un halo de inhibición). Verde-petróleo ≥90 %, ámbar 70–89 %, rojo &lt;70 %. Solo combinaciones con n ≥ 30 (CLSI M39).</p></div>
-      <div class="tarjeta"><h2>Perfil de sensibilidad</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Antibiótico</th><th>%S</th><th>IC 95 %</th><th></th><th>n</th><th>CIM₅₀</th><th>CIM₉₀</th></tr></thead><tbody id="sTb"></tbody></table></div>
-        <p class="nota">IC 95 % de Wilson. %S incluye SDD como I (no sensible). Puntos de corte CLSI 2025 aplicados a todos los años. CIM₅₀/₉₀: adultos, 2025, todas las muestras. Primer aislamiento por paciente, especie y año; excluye cultivos de tamizaje.</p></div>
+      <div class="tarjeta"><div class="thead"><div><div class="kick">Rosa de sensibilidad</div><h2 id="sTit"></h2><p class="sub" id="sSub"></p></div>
+        <div class="seg" id="sVista" data-v="rosa"><button data-v="rosa" class="on">Rosa</button><button data-v="cim">Espectro de CIM</button></div></div>
+        <div class="viz" id="sViz" style="margin-top:8px"></div><div id="sLeg"></div><p class="nota" id="sNota"></p></div>
+      <div class="tarjeta"><div class="kick">Perfil</div><h2>% sensible e intervalo de confianza</h2><p class="sub">Haga clic en un antibiótico para ver cómo cambió su distribución de CIM en diez años.</p>
+        <div class="tw" style="margin-top:10px"><table><thead><tr><th>Antibiótico</th><th>%S</th><th>IC 95 %</th><th></th><th>n</th><th>CIM₅₀</th><th>CIM₉₀</th></tr></thead><tbody id="sTb"></tbody></table></div>
+        <p class="nota">IC 95 % de Wilson. SDD cuenta como no sensible. CLSI 2025 aplicado a todos los años. Primer aislamiento por paciente, especie y año; sin tamizaje. Solo combinaciones con n ≥ 30 (CLSI M39). CIM₅₀/₉₀ en µg/mL: red, todas las muestras y edades, año seleccionado.</p></div>
     </div>
+    <div class="tarjeta" id="sDeriva"></div>
   </section>
 
   <!-- DISTRIBUCION -->
   <section id="pan-d" class="pan">
-    <div class="frow"><label>Año</label><select id="dAnio"></select><label>Grupo</label><select id="dGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico</option><option value="neonatal">Neonatal</option></select>
-      <label>Muestra</label><select id="dMu"><option value="todas">Todas</option><option value="uro">Urocultivo</option><option value="hemo">Hemocultivo</option><option value="resp">Respiratoria</option><option value="piel">Piel/tejidos/hueso</option><option value="abd">Intraabdominal</option><option value="lcr">LCR</option></select></div>
-    <div class="g2"><div class="tarjeta"><h2 id="dTit"></h2><p class="sub" id="dSub"></p><div style="position:relative;height:420px"><canvas id="dCh"></canvas></div>
+    <div class="frow"><div class="f"><label>Año</label><select class="sel" id="dAnio"></select></div>
+      <div class="f"><label>Grupo de edad</label><div class="seg" id="dGrupo" data-v="adulto"><button data-v="adulto" class="on">Adultos</button><button data-v="pediatrico">Pediátrico</button><button data-v="neonatal">Neonatal</button></div></div>
+      <div class="f"><label>Muestra</label><div class="seg" id="dMu" data-v="todas"><button data-v="todas" class="on">Todas</button><button data-v="uro">Orina</button><button data-v="hemo">Sangre</button><button data-v="resp">Respiratoria</button><button data-v="piel">Piel</button><button data-v="abd">Abdomen</button><button data-v="lcr">LCR</button></div></div></div>
+    <div class="g2"><div class="tarjeta"><div class="kick">Microorganismos</div><h2 id="dTit"></h2><p class="sub" id="dSub"></p><div style="position:relative;height:440px"><canvas id="dCh"></canvas></div>
       <div class="leg"><span><i style="background:#c2462e"></i>Gram negativo</span><span><i style="background:#4c858b"></i>Gram positivo</span><span><i style="background:#8fc1eb"></i>Hongos/otros</span></div></div>
-      <div class="tarjeta"><h2>Los más frecuentes</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Microorganismo</th><th>n</th><th>%</th></tr></thead><tbody id="dTb"></tbody></table></div></div></div>
+      <div class="tarjeta"><div class="kick">Tabla</div><h2>Los más frecuentes</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Microorganismo</th><th>n</th><th>%</th></tr></thead><tbody id="dTb"></tbody></table></div></div></div>
   </section>
 
   <!-- TENDENCIAS -->
   <section id="pan-t" class="pan">
-    <div class="frow"><label>Organismo</label><select id="tOrg"></select><label>Grupo</label><select id="tGrupo"><option value="adulto">Adultos</option><option value="pediatrico">Pediátrico</option></select>
-      <label>Antibióticos</label><select id="tA1"></select><select id="tA2"></select><select id="tA3"></select>
-      <label>Instituciones</label><select id="tCoh"><option value="red">Toda la red</option><option value="est">Cohorte estable</option></select></div>
-    <div class="tarjeta"><h2>Sensibilidad 2016–2025</h2><p class="sub" id="tSub"></p><div style="position:relative;height:380px"><canvas id="tCh"></canvas></div>
-      <p class="nota">Las bandas muestran el IC 95 % de Wilson. La red cambió de composición (instituciones que entran y salen). La «cohorte estable» incluye solo las instituciones con datos los diez años y es la mejor lectura de la tendencia.</p></div>
-    <div class="tarjeta"><h2>Indicadores prioritarios de resistencia</h2><p class="sub">OR anual dentro de institución (GLMM logístico con intercepto aleatorio por institución). OR &gt;1 = la resistencia aumenta cada año.</p>
+    <div class="frow"><div class="f"><label>Organismo</label><select class="sel" id="tOrg"></select></div>
+      <div class="f"><label>Grupo</label><div class="seg" id="tGrupo" data-v="adulto"><button data-v="adulto" class="on">Adultos</button><button data-v="pediatrico">Pediátrico</button></div></div>
+      <div class="f"><label>Antibióticos</label><div style="display:flex;gap:6px;flex-wrap:wrap"><select class="sel" id="tA1"></select><select class="sel" id="tA2"></select><select class="sel" id="tA3"></select></div></div>
+      <div class="f"><label>Instituciones</label><div class="seg" id="tCoh" data-v="red"><button data-v="red" class="on">Toda la red</button><button data-v="est">Cohorte estable</button></div></div></div>
+    <div class="tarjeta"><div class="kick">2016–2025</div><h2>Sensibilidad año a año</h2><p class="sub" id="tSub"></p><div style="position:relative;height:380px"><canvas id="tCh"></canvas></div>
+      <p class="nota">Bandas: IC 95 % de Wilson. La red cambió de composición (instituciones que entran y salen). La «cohorte estable» incluye solo las instituciones con datos los diez años y es la mejor lectura de la tendencia.</p></div>
+    <div class="tarjeta"><div class="kick">Modelo dentro de institución</div><h2>Indicadores prioritarios de resistencia</h2><p class="sub">OR anual (GLMM logístico con intercepto aleatorio por institución). OR &gt;1 = la resistencia aumenta cada año.</p>
       <div class="tw" style="margin-top:10px"><table><thead><tr><th>Indicador</th><th>2016–18</th><th>2023–25</th><th>2025</th><th>OR anual (IC 95 %)</th><th>OR cohorte estable</th><th>MOR</th></tr></thead><tbody id="tInd"></tbody></table></div>
-      <p class="nota">MOR (odds ratio mediana) 2023–2025: cuánto cambia la probabilidad de resistencia al pasar de una institución a otra con el mismo perfil. MOR 1 = sin diferencias entre instituciones; MOR 2 = la odds se duplica.</p></div>
+      <p class="nota">MOR (odds ratio mediana) 2023–2025: cuánto cambia la probabilidad de resistencia al pasar de una institución a otra con el mismo perfil. MOR 1 = sin diferencias; MOR 2 = la odds se duplica.</p></div>
   </section>
 
   <!-- COMPARAR (EMBUDO) -->
   <section id="pan-c" class="pan">
-    <div class="frow"><label>Indicador</label><select id="cInd"></select><label>Resaltar</label><select id="cYo"><option value="">— ninguna —</option></select></div>
-    <div class="g37"><div class="tarjeta"><h2>Gráfico de embudo 2023–2025</h2><p class="sub" id="cSub"></p><div style="position:relative;height:420px"><canvas id="cCh"></canvas></div>
-      <p class="nota">Cada punto es una institución (anónima). Las curvas son los límites de control binomiales del 95 % (punteado) y 99,8 % (continuo) alrededor del valor de la red. Un punto fuera del 99,8 % es una señal que vale la pena revisar. No es un ranking: las instituciones con pocos aislamientos varían más por azar.</p></div>
-      <div class="tarjeta"><h2>Instituciones</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Institución</th><th>n</th><th>%R</th><th>Señal</th></tr></thead><tbody id="cTb"></tbody></table></div></div></div>
+    <div class="frow"><div class="f"><label>Indicador</label><select class="sel" id="cInd"></select></div><div class="f"><label>Resaltar</label><select class="sel" id="cYo"><option value="">— ninguna —</option></select></div></div>
+    <div class="g37"><div class="tarjeta"><div class="kick">2023–2025</div><h2>Gráfico de embudo</h2><p class="sub" id="cSub"></p><div style="position:relative;height:440px"><canvas id="cCh"></canvas></div>
+      <p class="nota">Cada punto es una institución (anónima). Curvas: límites de control binomiales del 95 % (punteado) y 99,8 % (continuo) alrededor del valor de la red. Un punto fuera del 99,8 % es una señal para revisar. No es un ranking.</p></div>
+      <div class="tarjeta"><div class="kick">Tabla</div><h2>Instituciones</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Institución</th><th>n</th><th>%R</th><th>Señal</th></tr></thead><tbody id="cTb"></tbody></table></div></div></div>
   </section>
 
   <!-- MI INSTITUCION -->
   <section id="pan-i" class="pan">
-    <div class="frow"><label>Mi institución</label><select id="iInst"><option value="">— seleccionar —</option></select><label>Organismo</label><select id="iOrg"></select><label>Periodo</label><select id="iPer"><option value="2025">2025</option><option value="2023-2024">2023–2024</option></select></div>
-    <div id="iBox"><div class="tarjeta vacio">Seleccione su institución (cada institución conoce su letra) para ver su perfil frente al resto de la red.</div></div>
+    <div class="frow"><div class="f"><label>Mi institución</label><select class="sel" id="iInst"><option value="">— seleccionar —</option></select></div>
+      <div class="f"><label>Organismo</label><select class="sel" id="iOrg"></select></div>
+      <div class="f"><label>Periodo</label><div class="seg" id="iPer" data-v="2025"><button data-v="2025" class="on">2025</button><button data-v="2023-2024">2023–2024</button></div></div></div>
+    <div id="iBox"><div class="tarjeta vacio">Seleccione su institución (cada institución conoce su letra) para ver sus gráficos frente al resto de la red.</div></div>
   </section>
 
   <!-- CARBAPENEMASAS -->
   <section id="pan-k" class="pan">
     <div class="stats" id="kStats"></div>
-    <div class="g2"><div class="tarjeta"><h2>Casos por año y tipo</h2><p class="sub">Un caso = paciente-especie-año. Incluye tamizaje.</p><div style="position:relative;height:340px"><canvas id="kCh1"></canvas></div></div>
-      <div class="tarjeta"><h2>Tasa clínica por 1.000 BGN</h2><p class="sub">Carbapenemasas confirmadas en muestras clínicas por cada 1.000 primeros aislamientos de bacilos gramnegativos.</p><div style="position:relative;height:340px"><canvas id="kCh2"></canvas></div></div></div>
-    <div class="g2"><div class="tarjeta"><h2>2025: especie y tipo</h2><div class="tw" id="kEsp" style="margin-top:10px"></div></div>
-      <div class="tarjeta"><h2>¿Qué queda activo? (2023–2025)</h2><p class="sub">% sensible en Enterobacterales productores (muestras clínicas), por tipo de enzima.</p><div class="tw" id="kRes" style="margin-top:10px"></div></div></div>
+    <div class="g2"><div class="tarjeta"><div class="kick">2016–2025</div><h2>Casos por año y tipo</h2><p class="sub">Un caso = paciente-especie-año. Incluye tamizaje.</p><div style="position:relative;height:340px"><canvas id="kCh1"></canvas></div></div>
+      <div class="tarjeta"><div class="kick">Tasa</div><h2>Casos clínicos por 1.000 BGN</h2><p class="sub">Carbapenemasas confirmadas en muestras clínicas por cada 1.000 primeros aislamientos de bacilos gramnegativos.</p><div style="position:relative;height:340px"><canvas id="kCh2"></canvas></div></div></div>
+    <div class="g2"><div class="tarjeta"><div class="kick">2025</div><h2>Especie y tipo</h2><div class="tw" id="kEsp" style="margin-top:10px"></div></div>
+      <div class="tarjeta"><div class="kick">2023–2025</div><h2>¿Qué queda activo?</h2><p class="sub">% sensible en Enterobacterales productores (muestras clínicas), por tipo de enzima.</p><div class="tw" id="kRes" style="margin-top:10px"></div></div></div>
   </section>
 
   <!-- WISCA -->
   <section id="pan-w" class="pan">
     <div class="aviso"><b>Antibiograma ponderado por síndrome (WISCA).</b> El antibiograma clásico responde «¿qué % de <i>E. coli</i> es sensible?». Al elegir un tratamiento empírico la pregunta es otra: «si inicio este esquema en este síndrome, ¿qué probabilidad hay de cubrir el germen, cualquiera que sea?». WISCA combina la frecuencia de cada patógeno en el síndrome con su sensibilidad (modelo bayesiano, 2.000 simulaciones). Datos 2023–2025, instituciones activas.</div>
-    <div class="frow"><label>Síndrome</label><select id="wSin"></select></div>
-    <div class="g37"><div class="tarjeta"><h2>Cobertura empírica</h2><p class="sub" id="wSub"></p><div style="position:relative;height:420px"><canvas id="wCh"></canvas></div></div>
-      <div class="tarjeta"><h2>Qué pondera la cobertura</h2><p class="sub">Patógenos más frecuentes en el síndrome.</p><div class="tw" id="wComp" style="margin-top:10px"></div>
-        <p class="nota">Para resistencia intrínseca se asume R aunque no se haya probado; en <i>S. aureus</i> los betalactámicos siguen a la meticilina; en <i>E. faecalis</i> piperacilina/tazobactam y carbapenémicos siguen a la ampicilina. Bacteriemias: se excluyen estafilococos coagulasa negativa y otros contaminantes habituales. No sustituye el juicio clínico ni la guía institucional.</p></div></div>
+    <div class="frow"><div class="f"><label>Síndrome</label><div class="seg" id="wSin"></div></div></div>
+    <div class="g37"><div class="tarjeta"><div class="kick">Cobertura empírica</div><h2 id="wTit"></h2><p class="sub" id="wSub"></p><div style="position:relative;height:420px"><canvas id="wCh"></canvas></div></div>
+      <div class="tarjeta"><div class="kick">Composición</div><h2>Qué pondera la cobertura</h2><p class="sub">Patógenos más frecuentes en el síndrome.</p><div class="tw" id="wComp" style="margin-top:10px"></div>
+        <p class="nota">Para resistencia intrínseca se asume R aunque no se haya probado; en <i>S. aureus</i> los betalactámicos siguen a la meticilina; en <i>E. faecalis</i> piperacilina/tazobactam y carbapenémicos siguen a la ampicilina. Bacteriemias: sin estafilococos coagulasa negativa ni otros contaminantes habituales. No sustituye el juicio clínico ni la guía institucional.</p></div></div>
   </section>
 
   <!-- CALIDAD -->
@@ -184,6 +242,7 @@ footer{max-width:1180px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:v
 <footer id="pie"></footer>
 <script src="vendor/chart.umd.js"></script>
 <script src="datos_germen.js"></script>
+<script src="datos_extra.js"></script>
 <script src="tablero.js"></script>
 </body>
 </html>

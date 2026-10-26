@@ -1,4 +1,4 @@
-/* tablero.js — GERMEN · Tablero de vigilancia. Lee window.GERMEN (datos_germen.js) y
+/* tablero.js — Observatorio GERMEN. Lee window.GERMEN (datos_germen.js) y
    window.GERMEN_X (datos_extra.js: CIM y series por institución), ambos agregados y
    anonimizados. Todo se calcula en el navegador; no hay servidor.
    Los perfiles muestran CIM (sistemas automatizados), no halos de inhibición. */
@@ -22,6 +22,8 @@ const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).
 const f1 = (x, d = 1) => x == null || isNaN(x) ? '–' : Number(x).toLocaleString('es-CO', {minimumFractionDigits: d, maximumFractionDigits: d});
 const f0 = x => x == null ? '–' : Number(x).toLocaleString('es-CO');
 const it = s => `<i>${s}</i>`;
+// datos de un grafico SVG propio para el boton «Datos» (descargas.js)
+const csvAttr = filas => `data-csv="${encodeURIComponent(JSON.stringify(filas))}"`;
 function wilson(x, n, z = 1.96) {
   if (!n) return [NaN, NaN]; const p = x / n, d = 1 + z * z / n, c = (p + z * z / (2 * n)) / d;
   const h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return [Math.max(0, c - h) * 100, Math.min(1, c + h) * 100];
@@ -61,7 +63,9 @@ function arco(c, r0, r1, a0, a1) {
 function rosa(items, {size = 520, centro = '', ref = null} = {}) {
   // items: [{ab, p, n, li, ls}]; ref: {ab: pct} -> trazo oscuro (comparador)
   const c = size / 2, r0 = 58, r1 = size / 2 - 78, R = p => r0 + (r1 - r0) * Math.max(0, Math.min(100, p)) / 100, k = items.length, paso = 2 * Math.PI / k;
-  let g = `<svg viewBox="0 0 ${size} ${size}" role="img" aria-label="Rosa de sensibilidad">`;
+  const dl = [['Antibiótico', 'Código', '% sensible', 'IC 95 % inferior', 'IC 95 % superior', 'n', ...(ref ? ['Comparador (% sensible)'] : [])],
+    ...items.map(r => [AB[r.ab] || r.ab, r.ab, f1(r.p), f1(r.li), f1(r.ls), r.n, ...(ref ? [ref[r.ab] != null ? f1(ref[r.ab]) : ''] : [])])];
+  let g = `<svg viewBox="0 0 ${size} ${size}" role="img" aria-label="Perfil de sensibilidad" ${csvAttr(dl)}>`;
   [[100, '100 %', css('--borde2'), '3 5'], [90, '90', css('--s-hi'), ''], [70, '70', css('--s-md'), ''], [50, '50', css('--borde2'), '3 5']].forEach(([p, l, col, d]) => {
     g += `<circle cx="${c}" cy="${c}" r="${R(p)}" fill="none" stroke="${col}" stroke-opacity=".6" stroke-width="${d ? 1 : 1.6}" ${d ? `stroke-dasharray="${d}"` : ''}/><text x="${c + 4}" y="${c - R(p) + 12}" class="ax" fill="${col}">${l}</text>`; });
   g += `<circle cx="${c}" cy="${c}" r="${r0 - 4}" fill="${css('--sup')}" stroke="${css('--borde')}"/>`;
@@ -84,7 +88,11 @@ function espectro(fs, {w = 640, rh = 34, labW = 140, derW = 74} = {}) {
   if (!all.length) return '<div class="vacio">Sin resultados de CIM para esta combinación.</div>';
   const pmin = Math.max(-6, Math.min(...all)), pmax = Math.min(9, Math.max(...all)), nc = pmax - pmin + 1, cw = (w - labW - derW) / nc, top = 26, h = top + rh * fs.length + 6;
   const BG = {S: css('--cS'), I: css('--cI'), SDD: css('--cI'), R: css('--cR')}, FG = {S: css('--s-hi'), I: css('--s-md'), SDD: css('--s-md'), R: css('--s-lo')};
-  let g = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Distribución de CIM">`;
+  const CATN = {S: 'Sensible', I: 'Intermedio', SDD: 'SDD', R: 'Resistente'}, dl = [['Fila', 'CIM (µg/mL)', 'n', '%', 'Categoría CLSI 2025']];
+  fs.forEach(f => { const t = Object.values(f.dist).reduce((s, c) => s + c.n, 0) || 1;
+    Object.keys(f.dist).map(Number).sort((a, b) => a - b).forEach(p => { const c = f.dist[p], op = Object.entries(c.ops).sort((a, b) => b[1] - a[1])[0][0];
+      dl.push([f.lab, (op === '<=' ? '≤' : op === '>' ? '>' : '') + dilLab(op === '>' ? p - 1 : p), c.n, f1(100 * c.n / t), CATN[(f.cat || {})[p]] || 'Sin punto de corte']); }); });
+  let g = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Distribución de CIM" ${csvAttr(dl)}>`;
   for (let j = 0; j < nc; j++) g += `<text x="${labW + (j + .5) * cw}" y="16" text-anchor="middle" class="ax">${dilLab(pmin + j)}</text>`;
   g += `<text x="${w - derW + 8}" y="16" class="ax">n · CIM50/90</text>`;
   fs.forEach((f, i) => {
@@ -268,12 +276,14 @@ function renderI() {
       <div class="stat"><div class="stat-n" style="color:var(--ok)">${abajo}</div><div class="stat-l">indicadores por debajo de la red (99,8 %)</div></div>
       <div class="stat"><div class="stat-n">${q.pct_resultados_interpretables != null ? f1(q.pct_resultados_interpretables, 0) + ' %' : '–'}</div><div class="stat-l">resultados interpretables con CLSI 2025</div></div></div></div>
   <div class="g2">
-    <div class="tarjeta"><div class="kick">Rosa comparada · adultos · ${per}</div><h2>${it(ORG[o])}: mi institución frente al resto de la red</h2>
+    <div class="tarjeta"><div class="kick">Perfil comparado · adultos · ${per}</div><h2>${it(ORG[o])}: mi institución frente al resto de la red</h2>
       <p class="sub">Pétalos: % sensible en la institución (n ≥ 30). Trazo oscuro: el resto de la red.</p>
       <div class="viz" style="margin-top:6px">${rosaItems.length ? rosa(rosaItems, {size: 520, centro: 'Institución ' + L, ref: refRed}) : '<div class="vacio">Menos de 30 aislamientos por antibiótico en este periodo.</div>'}</div>${leyRosa('resto de la red')}</div>
     <div class="tarjeta"><div class="kick">¿Dónde estoy? · 2023–2025</div><h2>Mi posición en cada indicador</h2>
       <p class="sub">Cada punto es una institución; el rombo rojo es la suya; la línea, la red. Ámbar: instituciones fuera del límite del 99,8 %.</p>
-      <div style="margin-top:8px">${franjas(L)}</div><p class="nota">% resistente. Es la misma información del embudo («Comparar»), en una sola vista.</p></div>
+      <div style="margin-top:8px" ${csvAttr([['Indicador', '% resistente institución', 'n institución', '% resistente red', 'Señal'],
+        ...[...new Set(G.embudo.map(r => r.id))].map(id => { const y = G.embudo.find(r => r.id === id && r.letra === L), r0 = G.embudo.find(r => r.id === id);
+          return [IND_CORTO[id] || id, y ? f1(y.pct) : '', y ? y.n : '', f1(r0.red), y ? SEN_TXT[senal(y, r0.red / 100)] : 'sin datos suficientes']; })])}>${franjas(L)}</div><p class="nota">% resistente. Es la misma información del embudo («Comparar»), en una sola vista.</p></div>
   </div>
   <div class="tarjeta"><div class="kick">Tendencia 2016–2025</div><h2>Mi institución frente a la red, año a año</h2><p class="sub">% resistente. Línea roja: institución (puntos con n ≥ 20); petróleo: red completa con su IC 95 %.</p>
     <div class="g3" id="iTend" style="margin-top:10px"></div></div>

@@ -133,7 +133,7 @@ function renderR() {
       <div class="pp ${cl}">${sg(pp)} pp/año <span class="mu">(${f1(lo, 2)} a ${f1(hi, 2)})</span></div>${spark(m.gc, col)}</div>`; }).join('');
   $('#rTraz').querySelectorAll('.tz').forEach(d => d.onclick = () => { $('#tFen').value = d.dataset.k; document.querySelector('.tab[data-p="t"]').click(); });
   const subs = [...new Set(RED.map(r => r.s))].sort((a, b) => RED.filter(r => r.s === b).reduce((s, r) => s + r.n, 0) - RED.filter(r => r.s === a).reduce((s, r) => s + r.n, 0));
-  const pal = ['#4c858b', '#8fc1eb', '#d69a2d', '#c2462e', '#7a8c8f', '#2f5f64', '#b98ac9', '#6fbf73', '#e0b86a', '#5f6f9e'];
+  const pal = ['#026937', '#8fc1eb', '#d69a2d', '#c2462e', '#7a8c8f', '#01451f', '#b98ac9', '#6fbf73', '#e0b86a', '#5f6f9e'];
   $('#rRedSub').textContent = 'Primeros aislamientos por año y subregión (base jerárquica). Medellín concentra cerca de dos tercios; solo cinco subregiones aportan los seis años.';
   chart('rRed', {type: 'bar', data: {labels: YRS, datasets: subs.map((s, i) => ({label: s, data: YRS.map(y => (RED.find(r => r.s === s && r.t === y) || {}).n || 0), backgroundColor: pal[i % pal.length]}))},
     options: {maintainAspectRatio: false, plugins: {legend: {position: 'bottom', labels: {boxWidth: 12}}, tooltip: {callbacks: {label: c => `${c.dataset.label}: ${f0(c.raw)} aislamientos, ${f0((RED.find(r => r.s === c.dataset.label && r.t === +c.label) || {}).ni)} instituciones`}}},
@@ -215,7 +215,7 @@ function renderM() {
   ESPC.forEach(r => { if ((t !== '*' && r.t !== +t) || (y !== '*' && r.y !== y) || (m !== '*' && r.m !== m)) return; agg[r.e] = (agg[r.e] || 0) + r.n; gram[r.e] = r.g; });
   const tot = Object.values(agg).reduce((s, v) => s + v, 0), top = Object.entries(agg).sort((a, b) => b[1] - a[1]).slice(0, 15);
   $('#mTit').textContent = 'Microorganismos más frecuentes'; $('#mSub').textContent = `${t === '*' ? '2020–2025' : t} · ${$('#mSin .on').textContent} · ${$('#mAmb .on').textContent} · ${f0(tot)} primeros aislamientos`;
-  chart('mCh', {type: 'bar', data: {labels: top.map(x => x[0]), datasets: [{data: top.map(x => 100 * x[1] / tot), backgroundColor: top.map(x => gram[x[0]] === 'Negativo' ? '#c2462e' : '#4c858b')}]},
+  chart('mCh', {type: 'bar', data: {labels: top.map(x => x[0]), datasets: [{data: top.map(x => 100 * x[1] / tot), backgroundColor: top.map(x => gram[x[0]] === 'Negativo' ? '#c2462e' : '#026937')}]},
     options: {indexAxis: 'y', maintainAspectRatio: false, plugins: {legend: {display: false}, tooltip: {callbacks: {label: c => `${f1(c.raw)} % (${f0(top[c.dataIndex][1])})`}}},
       scales: {x: {title: {display: true, text: '% de los aislamientos'}}, y: {ticks: {font: {style: 'italic'}}}}}});
   $('#mTb').innerHTML = top.map(([e, n]) => `<tr><td>${esp(e)}</td><td>${f0(n)}</td><td>${f1(100 * n / tot)}</td></tr>`).join('');
@@ -283,7 +283,7 @@ function renderA() {
       forest(rows, {w: 1180, rowh: 19, labW: 300, valW: 240, min: -4, max: 4, log: false, ref: 0, ticks: [-4, -2, 0, 2, 4], fmt: r => `${sg(r.e)} pp (${f1(r.lo, 2)} a ${f1(r.hi, 2)})`}),
       'Solo E. coli TMP/SMX queda en el límite (p = 0,050) y baja en todas las subregiones. El análisis subregional es descriptivo; una diferencia territorial puede ser composición (derivación, alta complejidad).');
   } else if (v === 'sin') {
-    const C = {ITU: '#d69a2d', ITS: '#c2462e', IRB: '#4c858b'};
+    const C = {ITU: '#d69a2d', ITS: '#c2462e', IRB: '#026937'};
     const pan = F.map(k => { const s = O.sin[k] || {}, all = []; ['ITU', 'ITS', 'IRB'].forEach(y => s[y] && all.push(...s[y].serie)); if (!all.length) return '';
       const w = 280, h = 170, mn = Math.min(...all) * .9, mx = Math.max(...all) * 1.08, sx = i => 30 + i * (w - 40) / 5, sy = v => h - 20 - (v - mn) / (mx - mn) * (h - 50);
       let g = `<svg viewBox="0 0 ${w} ${h}" style="width:100%"><text x="0" y="14" style="font:600 13px var(--f-body);fill:var(--tx)">${FEN[k]}</text><text x="0" y="30" class="ax" style="font:11px var(--f-mono);fill:var(--tx3)">Q p ${f1(s.Q[1], 3)} · Holm ${f1(s.Q[2], 2)}</text>`;

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Observatorio RAM Antioquia</title>
 <meta name="description" content="Observatorio de resistencia antimicrobiana de Antioquia, 2020–2025: perfiles de sensibilidad por subregión, síndrome y ámbito, espectro de CIM, tendencias ajustadas, comparación anónima de instituciones, consumo de antibióticos y hallazgos del análisis multinivel. Laboratorio Departamental de Salud Pública – SSSPSA, Universidad de Antioquia, red GERMEN.">
-<meta name="theme-color" content="#4c858b">
+<meta name="theme-color" content="#026937">
 <link rel="icon" type="image/png" href="img/favicon-64.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -179,6 +179,8 @@ footer{max-width:1240px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:v
 .xstats .stat{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--borde);border-radius:12px;background:var(--sup2)}
 .xstats .stat b{font:800 26px/1 var(--f-disp);color:var(--germen-osc)}.xstats .stat span{font-size:13px;color:var(--tx2)}
 .xh{font:600 15px var(--f-body);margin:6px 0 2px}
+.hero-in{background:linear-gradient(120deg,#01451f 0%,#026937 55%,#3a8f5c 100%)!important}
+:root{--s-hi:#026937}
 
 </style>
 </head>
@@ -262,7 +264,7 @@ footer{max-width:1240px;margin:0 auto;padding:0 16px 30px;font-size:12px;color:v
       <div class="f"><label>Muestra</label><div class="seg" id="mSin" data-v="*"><button data-v="*" class="on">Todas</button><button data-v="ITU">Orina</button><button data-v="ITS">Sangre</button><button data-v="IRB">Respiratoria</button></div></div>
       <div class="f"><label>Ámbito</label><div class="seg" id="mAmb" data-v="*"><button data-v="*" class="on">Todos</button><button data-v="Comunitario">Comunitario</button><button data-v="Hospitalización">Hospitalización</button><button data-v="UCI">UCI</button></div></div></div>
     <div class="g2"><div class="tarjeta"><div class="kick">Microorganismos</div><h2 id="mTit"></h2><p class="sub" id="mSub"></p><div style="position:relative;height:460px"><canvas id="mCh"></canvas></div>
-      <div class="leg"><span><i style="background:#c2462e"></i>Gram negativo</span><span><i style="background:#4c858b"></i>Gram positivo</span></div></div>
+      <div class="leg"><span><i style="background:#c2462e"></i>Gram negativo</span><span><i style="background:#026937"></i>Gram positivo</span></div></div>
       <div class="tarjeta"><div class="kick">Tabla</div><h2>Los más frecuentes</h2><div class="tw" style="margin-top:10px"><table><thead><tr><th>Microorganismo</th><th>n</th><th>%</th></tr></thead><tbody id="mTb"></tbody></table></div></div></div>
   </section>
 
